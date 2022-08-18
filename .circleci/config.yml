@@ -219,7 +219,7 @@ workflows:
           target: librem_14
           subcommand: ""
           requires:
-            - x230-hotp-maximized
+            - prep_env
 
       # Coreboot 4.11
 #      - build_and_persist:
@@ -227,7 +227,7 @@ workflows:
 #          target: librem_l1um
 #          subcommand: ""
 #          requires:
-#            - librem_14
+#            - prep_env
 
       # Coreboot for Talos
       - build_and_persist:
@@ -236,12 +236,14 @@ workflows:
           target: talos-2_workstation
           subcommand: ""
           requires:
-            - librem_14
+            - prep_env
 
       #Cache one workspace per Coreboot version, ideally the boards including the highest number of modules, since not rebuilt across builds.
       #Below, 4.11, 4.13, 4.15
       - save_cache:
           requires:
+            - librem_14
+            - x230-hotp-maximized
             - talos-2_workstation
 
 #
