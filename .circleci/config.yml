@@ -131,6 +131,7 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths:
+            - project/packages
             - project/build/x86
             - project/crossgcc/x86
             - project/install/x86
@@ -154,6 +155,7 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths:
+            - project/packages
             - project/build/ppc64
             - project/crossgcc/ppc64
             - project/install/ppc64
@@ -253,8 +255,8 @@ workflows:
 
       # Coreboot for Talos
       - build_and_persist_ppc64:
-          name: talos-2_workstation
-          target: talos-2_workstation
+          name: talos-2_server
+          target: talos-2_server
           subcommand: ""
           requires:
             - prep_env
@@ -264,7 +266,7 @@ workflows:
       - save_cache:
           requires:
             - librem_14
-            - talos-2_workstation
+            - talos-2_server
 
 #
 #
@@ -538,12 +540,12 @@ workflows:
 #            - librem_14
 
       - build:
-          name: talos-2_server
+          name: talos-2_workstation
           arch: ppc64
-          target: talos-2_server
+          target: talos-2_workstation
           subcommand: ""
           requires:
-            - talos-2_workstation
+            - talos-2_server
 
 ########################
 ########################
