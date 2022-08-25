@@ -67,6 +67,9 @@ endif
 log_dir		:= $(build)/log
 BUILD_LOG	:= $(shell mkdir -p "$(log_dir)" )
 
+# Create target-specific packages directory if it doesn't already exist
+PACKAGES	:= $(shell mkdir -p "$(packages)" )
+
 # record the build date / git hashes and other files here
 HASHES		:= $(build)/$(BOARD)/hashes.txt
 
