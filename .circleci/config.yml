@@ -112,11 +112,14 @@ jobs:
           paths:
             - .
 
-  build_and_persist_x86:
+  build_and_persist:
     docker:
       - image: debian:11
     resource_class: large
     parameters:
+      arch:
+        type: string
+        default: x86
       target:
         type: string
       subcommand:
@@ -125,40 +128,16 @@ jobs:
       - attach_workspace:
           at: ~/
       - build_board:
-          arch: x86
-          target: <<parameters.target>> 
+          arch: <<parameters.arch>>
+          target: <<parameters.target>>
           subcommand: <<parameters.subcommand>>
       - persist_to_workspace:
           root: ~/
           paths:
-            - project/packages
-            - project/build/x86
-            - project/crossgcc/x86
-            - project/install/x86
-
-  build_and_persist_ppc64:
-    docker:
-      - image: debian:11
-    resource_class: large
-    parameters:
-      target:
-        type: string
-      subcommand:
-        type: string
-    steps:
-      - attach_workspace:
-          at: ~/
-      - build_board:
-          arch: ppc64
-          target: <<parameters.target>> 
-          subcommand: <<parameters.subcommand>>
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - project/packages
-            - project/build/ppc64
-            - project/crossgcc/ppc64
-            - project/install/ppc64
+            - project/packages/<<parameters.arch>>
+            - project/build/<<parameters.arch>>
+            - project/crossgcc/<<parameters.arch>>
+            - project/install/<<parameters.arch>>
 
   build:
     docker:
@@ -230,7 +209,7 @@ workflows:
 # for the parallel boards built at the end, and also save_cache.
 
       # Coreboot 4.13
-      - build_and_persist_x86:
+      - build_and_persist:
           name: x230-hotp-maximized
           target: x230-hotp-maximized
           subcommand: ""
@@ -238,7 +217,7 @@ workflows:
             - prep_env
 
       # Coreboot 4.15
-      - build_and_persist_x86:
+      - build_and_persist:
           name: librem_14
           target: librem_14
           subcommand: ""
@@ -246,7 +225,7 @@ workflows:
             - x230-hotp-maximized
 
       # Coreboot 4.11
-#      - build_and_persist_x86:
+#      - build_and_persist:
 #          name: librem_l1um 
 #          target: librem_l1um
 #          subcommand: ""
@@ -254,8 +233,9 @@ workflows:
 #            - librem_14
 
       # Coreboot for Talos
-      - build_and_persist_ppc64:
+      - build_and_persist:
           name: talos-2_server
+          arch: ppc64
           target: talos-2_server
           subcommand: ""
           requires:

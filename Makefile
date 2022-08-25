@@ -16,15 +16,8 @@ LB_OUTPUT_FILE		:= linuxboot-$(BOARD)-$(HEADS_GIT_VERSION).rom
 all:
 -include .config
 
-ifneq "$(TOOLCHAIN)" ""
-$(info Using $(TOOLCHAIN) for cross compiler and packages)
-packages	?= $(TOOLCHAIN)/packages
-CROSS		:= $(TOOLCHAIN)/crossgcc/x86_64-linux-musl/bin/x86_64-linux-musl-
-endif
-
 modules-y 	:=
 pwd 		:= $(shell pwd)
-packages 	?= $(pwd)/packages
 config		:= $(pwd)/config
 INSTALL		:= $(pwd)/install
 
@@ -47,8 +40,10 @@ endif
 # By default, we are building for x86
 CONFIG_TARGET_ARCH := x86
 
-# These can be used in board configuration, must not expand right here
+# These can be used in/affected by board configuration, must not expand right
+# here
 build		= $(pwd)/build/$(CONFIG_TARGET_ARCH)
+packages 	= $(pwd)/packages/$(CONFIG_TARGET_ARCH)
 board_build	= $(build)/$(BOARD)
 
 include $(CONFIG)
